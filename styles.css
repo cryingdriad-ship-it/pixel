@@ -73,8 +73,8 @@ input[type="file"] {
 }
 
 .stats,
-.views,
-.diff {
+.main-compare,
+.views {
   background: #ffffff;
   border: 1px solid #d8deec;
   border-radius: 10px;
@@ -82,8 +82,8 @@ input[type="file"] {
 }
 
 .stats h2,
-.views h2,
-.diff h2 {
+.main-compare h2,
+.views h2 {
   margin: 0 0 8px;
   font-size: 1.1rem;
 }
@@ -97,7 +97,7 @@ input[type="file"] {
   gap: 12px;
 }
 
-#sideView {
+.compare-grid {
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 

@@ -10,11 +10,10 @@ const elements = {
   mismatchCount: document.getElementById("mismatchCount"),
   mismatchPercent: document.getElementById("mismatchPercent"),
   imageSize: document.getElementById("imageSize"),
-  sideView: document.getElementById("sideView"),
+  baseCanvas: document.getElementById("baseCanvas"),
+  testCanvas: document.getElementById("testCanvas"),
   overlayView: document.getElementById("overlayView"),
   sliderView: document.getElementById("sliderView"),
-  sideBaseCanvas: document.getElementById("sideBaseCanvas"),
-  sideTestCanvas: document.getElementById("sideTestCanvas"),
   overlayBaseCanvas: document.getElementById("overlayBaseCanvas"),
   overlayTopCanvas: document.getElementById("overlayTopCanvas"),
   sliderCanvas: document.getElementById("sliderCanvas"),
@@ -38,8 +37,8 @@ const scratchCanvas = document.createElement("canvas");
 const scratchCtx = scratchCanvas.getContext("2d", { willReadFrequently: true });
 
 const contexts = {
-  sideBase: elements.sideBaseCanvas.getContext("2d"),
-  sideTest: elements.sideTestCanvas.getContext("2d"),
+  base: elements.baseCanvas.getContext("2d"),
+  test: elements.testCanvas.getContext("2d"),
   overlayBase: elements.overlayBaseCanvas.getContext("2d"),
   overlayTop: elements.overlayTopCanvas.getContext("2d"),
   slider: elements.sliderCanvas.getContext("2d"),
@@ -61,7 +60,7 @@ function clearCanvas(canvas, ctx) {
 }
 
 function updateStats(mismatchPixels = 0, totalPixels = 0) {
-  elements.mismatchCount.textContent = mismatchPixels.toLocaleString("ru-RU");
+  elements.mismatchCount.textContent = mismatchPixels.toLocaleString("uk-UA");
   elements.mismatchPercent.textContent =
     totalPixels > 0 ? `${((mismatchPixels / totalPixels) * 100).toFixed(2)}%` : "0.00%";
   elements.imageSize.textContent =
@@ -73,9 +72,9 @@ function setDefaultStats() {
 }
 
 function setViewMode(mode) {
-  elements.sideView.classList.toggle("hidden", mode !== "side");
   elements.overlayView.classList.toggle("hidden", mode !== "overlay");
   elements.sliderView.classList.toggle("hidden", mode !== "slider");
+  elements.overlayOpacityInput.disabled = mode !== "overlay";
 }
 
 function applyOverlayOpacity() {
@@ -164,8 +163,8 @@ function runComparison() {
 }
 
 function drawAllViews() {
-  drawSingleImage(elements.sideBaseCanvas, contexts.sideBase, state.baseImage);
-  drawSingleImage(elements.sideTestCanvas, contexts.sideTest, state.testImage);
+  drawSingleImage(elements.baseCanvas, contexts.base, state.baseImage);
+  drawSingleImage(elements.testCanvas, contexts.test, state.testImage);
   drawSingleImage(elements.overlayBaseCanvas, contexts.overlayBase, state.baseImage);
   drawSingleImage(elements.overlayTopCanvas, contexts.overlayTop, state.testImage);
   drawSliderView();
@@ -187,7 +186,7 @@ function resetComparisonCanvases() {
 
 function compareIfReady() {
   if (!state.baseImage || !state.testImage) {
-    setStatus("Выберите оба изображения для запуска сравнения.");
+    setStatus("Виберіть обидва зображення для запуску порівняння.");
     return;
   }
 
@@ -195,8 +194,8 @@ function compareIfReady() {
     state.baseImage.width !== state.testImage.width ||
     state.baseImage.height !== state.testImage.height
   ) {
-    drawSingleImage(elements.sideBaseCanvas, contexts.sideBase, state.baseImage);
-    drawSingleImage(elements.sideTestCanvas, contexts.sideTest, state.testImage);
+    drawSingleImage(elements.baseCanvas, contexts.base, state.baseImage);
+    drawSingleImage(elements.testCanvas, contexts.test, state.testImage);
     resetComparisonCanvases();
     state.width = 0;
     state.height = 0;
@@ -204,7 +203,7 @@ function compareIfReady() {
     state.testPixels = null;
     setDefaultStats();
     setStatus(
-      "Размеры не совпадают. Для попиксельного сравнения загрузите изображения одинакового размера.",
+      "Розміри не збігаються. Для попіксельного порівняння завантажте зображення однакового розміру.",
       true
     );
     return;
@@ -216,8 +215,8 @@ function compareIfReady() {
   scratchCanvas.height = state.height;
 
   const comparisonCanvases = [
-    elements.sideBaseCanvas,
-    elements.sideTestCanvas,
+    elements.baseCanvas,
+    elements.testCanvas,
     elements.overlayBaseCanvas,
     elements.overlayTopCanvas,
     elements.sliderCanvas,
@@ -229,7 +228,7 @@ function compareIfReady() {
   applyOverlayOpacity();
   preparePixelBuffers();
   runComparison();
-  setStatus("Сравнение выполнено. Измените порог или режим просмотра для дополнительного анализа.");
+  setStatus("Порівняння виконано. Змініть поріг або режим перегляду для додаткового аналізу.");
 }
 
 function fileToImage(file) {
@@ -243,7 +242,7 @@ function fileToImage(file) {
     };
     image.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error("Не удалось прочитать выбранный файл как изображение."));
+      reject(new Error("Не вдалося прочитати обраний файл як зображення."));
     };
     image.src = url;
   });
@@ -265,7 +264,7 @@ async function handleFileSelection(kind, event) {
     return;
   }
 
-  setStatus(`Загрузка ${kind === "baseImage" ? "оригинала" : "тестового"}...`);
+  setStatus(`Завантаження ${kind === "baseImage" ? "оригіналу" : "тестового"}...`);
   try {
     state[kind] = await fileToImage(file);
     compareIfReady();
