@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Diff Viewer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <header class="app__header">
+      <h1>Попиксельное сравнение изображений</h1>
+      <p>Загрузите оригинал и тест, задайте порог чувствительности и изучите различия.</p>
+    </header>
+
+    <section class="controls">
+      <div class="control-group">
+        <label for="baseInput">Оригинал (Base/Reference)</label>
+        <input id="baseInput" type="file" accept="image/*">
+      </div>
+
+      <div class="control-group">
+        <label for="testInput">Тестовое (Test)</label>
+        <input id="testInput" type="file" accept="image/*">
+      </div>
+
+      <div class="control-group">
+        <label for="thresholdInput">Порог чувствительности: <span id="thresholdValue">16</span></label>
+        <input id="thresholdInput" type="range" min="0" max="255" value="16">
+      </div>
+
+      <div class="control-group">
+        <label for="modeSelect">Режим просмотра</label>
+        <select id="modeSelect">
+          <option value="side">Side-by-side</option>
+          <option value="overlay">Overlay</option>
+          <option value="slider">Slider</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="overlayOpacityInput">Прозрачность верхнего слоя (Overlay): <span id="overlayValue">50%</span></label>
+        <input id="overlayOpacityInput" type="range" min="0" max="100" value="50">
+      </div>
+    </section>
+
+    <p id="statusMessage" class="status">Загрузите два изображения одинакового размера для сравнения.</p>
+
+    <section class="stats">
+      <h2>Статистика</h2>
+      <p>Несовпадающих пикселей: <strong id="mismatchCount">0</strong></p>
+      <p>Процент отличий: <strong id="mismatchPercent">0.00%</strong></p>
+      <p>Размер: <strong id="imageSize">—</strong></p>
+    </section>
+
+    <section class="views">
+      <h2>Просмотр исходных изображений</h2>
+
+      <div id="sideView" class="view-panel">
+        <figure>
+          <figcaption>Оригинал</figcaption>
+          <canvas id="sideBaseCanvas"></canvas>
+        </figure>
+        <figure>
+          <figcaption>Тестовое</figcaption>
+          <canvas id="sideTestCanvas"></canvas>
+        </figure>
+      </div>
+
+      <div id="overlayView" class="view-panel hidden">
+        <div class="overlay-stack">
+          <canvas id="overlayBaseCanvas"></canvas>
+          <canvas id="overlayTopCanvas" class="overlay-top"></canvas>
+        </div>
+      </div>
+
+      <div id="sliderView" class="view-panel hidden">
+        <p class="hint">Потяните по картинке, чтобы открыть слои.</p>
+        <canvas id="sliderCanvas"></canvas>
+      </div>
+    </section>
+
+    <section class="diff">
+      <h2>Diff-карта</h2>
+      <canvas id="diffCanvas"></canvas>
+      <p class="hint">Совпадения показаны приглушенно, различия отмечены ярко-красным.</p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
