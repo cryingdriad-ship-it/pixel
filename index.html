@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Попіксельне порівняння зображень</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app">
+    <header class="app__header">
+      <h1>Попіксельне порівняння зображень</h1>
+      <p>Завантажте оригінал і тест, задайте поріг чутливості та перегляньте відмінності.</p>
+    </header>
+
+    <section class="controls">
+      <div class="control-group">
+        <label for="baseInput">Оригінал (Base/Reference)</label>
+        <input id="baseInput" type="file" accept="image/*">
+      </div>
+
+      <div class="control-group">
+        <label for="testInput">Тестове (Test)</label>
+        <input id="testInput" type="file" accept="image/*">
+      </div>
+
+      <div class="control-group">
+        <label for="thresholdInput">Поріг чутливості: <span id="thresholdValue">16</span></label>
+        <input id="thresholdInput" type="range" min="0" max="255" value="16">
+      </div>
+
+      <div class="control-group">
+        <label for="modeSelect">Додатковий режим перегляду</label>
+        <select id="modeSelect">
+          <option value="none">Без додаткового режиму</option>
+          <option value="overlay">Накладання (Overlay)</option>
+          <option value="slider">Шторка (Slider)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="overlayOpacityInput">Прозорість верхнього шару (Overlay): <span id="overlayValue">50%</span></label>
+        <input id="overlayOpacityInput" type="range" min="0" max="100" value="50">
+      </div>
+    </section>
+
+    <p id="statusMessage" class="status">Завантажте два зображення однакового розміру для порівняння.</p>
+
+    <section class="stats">
+      <h2>Статистика</h2>
+      <p>Пікселів із відмінностями: <strong id="mismatchCount">0</strong></p>
+      <p>Відсоток відмінностей: <strong id="mismatchPercent">0.00%</strong></p>
+      <p>Розмір: <strong id="imageSize">—</strong></p>
+    </section>
+
+    <section class="main-compare">
+      <h2>Основне порівняння (видно одразу)</h2>
+      <div class="compare-grid">
+        <figure>
+          <figcaption>Оригінал</figcaption>
+          <canvas id="baseCanvas"></canvas>
+        </figure>
+        <figure>
+          <figcaption>Тестове</figcaption>
+          <canvas id="testCanvas"></canvas>
+        </figure>
+        <figure>
+          <figcaption>Diff-карта</figcaption>
+          <canvas id="diffCanvas"></canvas>
+        </figure>
+      </div>
+      <p class="hint">Збіги показано приглушено, а відмінності підсвічено яскравим кольором.</p>
+    </section>
+
+    <section class="views">
+      <h2>Додаткові режими перегляду</h2>
+
+      <div id="overlayView" class="view-panel hidden">
+        <div class="overlay-stack">
+          <canvas id="overlayBaseCanvas"></canvas>
+          <canvas id="overlayTopCanvas" class="overlay-top"></canvas>
+        </div>
+      </div>
+
+      <div id="sliderView" class="view-panel hidden">
+        <p class="hint">Потягніть по зображенню, щоб відкривати шари.</p>
+        <canvas id="sliderCanvas"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
